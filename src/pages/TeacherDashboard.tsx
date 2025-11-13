@@ -22,8 +22,70 @@ export default function TeacherDashboard() {
     
     setUploading(true);
     
-    // Simulate upload process
+    // Simulate upload process and store sample student data
     setTimeout(() => {
+      const sampleStudentData = [
+        {
+          regNo: "2024CS001",
+          semester: "5",
+          subjectData: [
+            { subject: "Mathematics", marks: 85, total: 100 },
+            { subject: "Physics", marks: 78, total: 100 },
+            { subject: "Chemistry", marks: 92, total: 100 },
+            { subject: "English", marks: 88, total: 100 },
+            { subject: "Computer Sci", marks: 95, total: 100 },
+          ],
+          radarData: [
+            { subject: "Math", score: 85 },
+            { subject: "Physics", score: 78 },
+            { subject: "Chemistry", score: 92 },
+            { subject: "English", score: 88 },
+            { subject: "CS", score: 95 },
+          ],
+          overallGrade: "A",
+          overallPercentage: 87.6,
+          strengths: ["Chemistry", "Computer Science", "Mathematics"],
+          weaknesses: ["Physics"],
+          schedule: [
+            { day: "Monday", topic: "Newton's Laws of Motion", duration: "1 hour" },
+            { day: "Tuesday", topic: "Practice Problems - Forces", duration: "45 mins" },
+            { day: "Wednesday", topic: "Energy and Work", duration: "1 hour" },
+            { day: "Thursday", topic: "Review and Quiz", duration: "30 mins" },
+            { day: "Friday", topic: "Momentum and Collisions", duration: "1 hour" },
+          ],
+        },
+        {
+          regNo: "2024CS002",
+          semester: "5",
+          subjectData: [
+            { subject: "Mathematics", marks: 92, total: 100 },
+            { subject: "Physics", marks: 88, total: 100 },
+            { subject: "Chemistry", marks: 85, total: 100 },
+            { subject: "English", marks: 90, total: 100 },
+            { subject: "Computer Sci", marks: 97, total: 100 },
+          ],
+          radarData: [
+            { subject: "Math", score: 92 },
+            { subject: "Physics", score: 88 },
+            { subject: "Chemistry", score: 85 },
+            { subject: "English", score: 90 },
+            { subject: "CS", score: 97 },
+          ],
+          overallGrade: "A+",
+          overallPercentage: 90.4,
+          strengths: ["Computer Science", "Mathematics", "English"],
+          weaknesses: ["Chemistry"],
+          schedule: [
+            { day: "Monday", topic: "Chemical Bonding", duration: "1 hour" },
+            { day: "Tuesday", topic: "Practice Problems - Equations", duration: "45 mins" },
+            { day: "Wednesday", topic: "Organic Chemistry", duration: "1 hour" },
+            { day: "Thursday", topic: "Review and Quiz", duration: "30 mins" },
+            { day: "Friday", topic: "Lab Techniques", duration: "1 hour" },
+          ],
+        },
+      ];
+      
+      localStorage.setItem('studentData', JSON.stringify(sampleStudentData));
       localStorage.setItem('datasetUploaded', 'true');
       localStorage.setItem('uploadTimestamp', new Date().toISOString());
       

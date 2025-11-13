@@ -1,4 +1,4 @@
-import { Home, FileText, Calendar, Trophy, MessageSquare, BarChart3, LogOut } from "lucide-react";
+import { Home, FileText, Calendar, Trophy, MessageSquare, BarChart3, TrendingUp, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const studentItems = [
-  { title: "Performance Review", url: "/student/dashboard", icon: BarChart3 },
+  { title: "Dashboard", url: "/student/dashboard", icon: Home },
+  { title: "Performance Review", url: "/student/performance", icon: TrendingUp },
   { title: "Assignments", url: "/student/assignments", icon: FileText },
   { title: "Club Events", url: "/student/events", icon: Calendar },
   { title: "Achievements", url: "/student/achievements", icon: Trophy },
