@@ -1,58 +1,172 @@
 import DashboardLayout from "@/components/DashboardLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Trophy, Award, Star, Medal } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useState } from "react";
+import { Trophy, Upload } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function StudentAchievements() {
-  const achievements = [
-    { id: 1, title: "Perfect Attendance", description: "Attended all classes in November", icon: Star, color: "text-warning" },
-    { id: 2, title: "Top Scorer", description: "Highest marks in Chemistry", icon: Trophy, color: "text-success" },
-    { id: 3, title: "Best Project", description: "Outstanding Computer Science project", icon: Award, color: "text-primary" },
-    { id: 4, title: "Quick Learner", description: "Completed all assignments on time", icon: Medal, color: "text-chart-4" },
-  ];
+  const [type, setType] = useState<'inter-college' | 'external'>('inter-college');
+  const [date, setDate] = useState("");
+  const [content, setContent] = useState("");
+  const [location, setLocation] = useState("");
+  const [universityName, setUniversityName] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const { toast } = useToast();
+  const { userId } = useAuth();
+
+  const handleSubmit = () => {
+    if (!date || !content || !location || !file) {
+      toast({
+        title: "Error",
+        description: "Please fill all required fields and upload a file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (type === 'external' && !universityName) {
+      toast({
+        title: "Error",
+        description: "Please enter university name for external participation",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const achievement = {
+      id: Date.now().toString(),
+      studentId: userId,
+      type,
+      date,
+      content,
+      location,
+      universityName: type === 'external' ? universityName : undefined,
+      fileName: file.name,
+      submittedDate: new Date().toISOString().split('T')[0],
+    };
+
+    const stored = localStorage.getItem("achievements");
+    const achievements = stored ? JSON.parse(stored) : [];
+    achievements.push(achievement);
+    localStorage.setItem("achievements", JSON.stringify(achievements));
+
+    setDate("");
+    setContent("");
+    setLocation("");
+    setUniversityName("");
+    setFile(null);
+    setType('inter-college');
+
+    toast({
+      title: "Success",
+      description: "Achievement submitted successfully",
+    });
+  };
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h2 className="text-3xl font-bold text-foreground mb-2">Achievements</h2>
-          <p className="text-muted-foreground">Your awards and accomplishments</p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          {achievements.map((achievement) => (
-            <Card key={achievement.id} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex items-center gap-4">
-                  <div className={`p-3 rounded-full bg-muted ${achievement.color}`}>
-                    <achievement.icon className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">{achievement.title}</CardTitle>
-                    <CardDescription>{achievement.description}</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
+          <h2 className="text-3xl font-bold text-foreground mb-2">Submit Achievement</h2>
+          <p className="text-muted-foreground">Record your academic and extracurricular achievements</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Progress Overview</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-warning" />
+              Achievement Details
+            </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
+          <CardContent className="space-y-6">
+            <div>
+              <Label className="mb-3 block">Participation Type</Label>
+              <RadioGroup value={type} onValueChange={(value) => setType(value as 'inter-college' | 'external')}>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="inter-college" id="inter" />
+                  <Label htmlFor="inter" className="font-normal cursor-pointer">
+                    Inter-College Participation
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="external" id="external" />
+                  <Label htmlFor="external" className="font-normal cursor-pointer">
+                    External Participation
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div>
+              <Label htmlFor="date">Date of Participation *</Label>
+              <Input
+                id="date"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="content">Achievement Content *</Label>
+              <Textarea
+                id="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Describe your achievement (e.g., First Prize in Science Fair, Sports Championship)"
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="location">Location *</Label>
+              <Input
+                id="location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g., Main Auditorium, Sports Complex"
+              />
+            </div>
+
+            {type === 'external' && (
               <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium">Overall Achievement Score</span>
-                  <span className="text-sm text-muted-foreground">85/100</span>
-                </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div className="h-full bg-success" style={{ width: '85%' }} />
-                </div>
+                <Label htmlFor="university">University Name *</Label>
+                <Input
+                  id="university"
+                  value={universityName}
+                  onChange={(e) => setUniversityName(e.target.value)}
+                  placeholder="e.g., XYZ University"
+                />
+              </div>
+            )}
+
+            <div>
+              <Label htmlFor="file">Upload Certificate/Document *</Label>
+              <div className="mt-2">
+                <Input
+                  id="file"
+                  type="file"
+                  onChange={(e) => setFile(e.target.files?.[0] || null)}
+                  accept=".pdf,.jpg,.jpeg,.png"
+                />
+                {file && (
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Selected: {file.name}
+                  </p>
+                )}
               </div>
             </div>
+
+            <Button onClick={handleSubmit} className="w-full">
+              <Upload className="h-4 w-4 mr-2" />
+              Submit Achievement
+            </Button>
           </CardContent>
         </Card>
       </div>
