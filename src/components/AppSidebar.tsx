@@ -26,8 +26,10 @@ const studentItems = [
 
 const teacherItems = [
   { title: "Dashboard", url: "/teacher/dashboard", icon: Home },
-  { title: "Upload Data", url: "/teacher/upload", icon: FileText },
-  { title: "Students", url: "/teacher/students", icon: BarChart3 },
+  { title: "Assignments", url: "/teacher/assignments", icon: FileText },
+  { title: "Club Events", url: "/teacher/events", icon: Calendar },
+  { title: "Achievements", url: "/teacher/achievements", icon: Trophy },
+  { title: "Feedback", url: "/teacher/feedback", icon: MessageSquare },
 ];
 
 export function AppSidebar() {
