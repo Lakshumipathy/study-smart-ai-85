@@ -1,7 +1,8 @@
-import { Home, FileText, Calendar, Trophy, MessageSquare, BarChart3, TrendingUp, LogOut } from "lucide-react";
+import { Home, FileText, Calendar, Trophy, MessageSquare, TrendingUp, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
 
 import {
   Sidebar,
@@ -38,12 +39,51 @@ export function AppSidebar() {
   const navigate = useNavigate();
   const { role, logout } = useAuth();
   const currentPath = location.pathname;
+  const [assignmentsBadge, setAssignmentsBadge] = useState(0);
+  const [eventsBadge, setEventsBadge] = useState(0);
+
+  useEffect(() => {
+    if (role === "student") {
+      const checkNotifications = () => {
+        const lastCheckedAssignments = localStorage.getItem("lastCheckedAssignments") || "0";
+        const lastCheckedEvents = localStorage.getItem("lastCheckedEvents") || "0";
+        const lastAssignmentPosted = localStorage.getItem("lastAssignmentPosted") || "0";
+        const lastEventPosted = localStorage.getItem("lastEventPosted") || "0";
+
+        if (parseInt(lastAssignmentPosted) > parseInt(lastCheckedAssignments)) {
+          const assignments = JSON.parse(localStorage.getItem("assignments") || "[]");
+          setAssignmentsBadge(assignments.length);
+        } else {
+          setAssignmentsBadge(0);
+        }
+
+        if (parseInt(lastEventPosted) > parseInt(lastCheckedEvents)) {
+          const events = JSON.parse(localStorage.getItem("clubEvents") || "[]");
+          setEventsBadge(events.length);
+        } else {
+          setEventsBadge(0);
+        }
+      };
+
+      checkNotifications();
+      const interval = setInterval(checkNotifications, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [role]);
 
   const items = role === 'student' ? studentItems : teacherItems;
 
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const getBadge = (title: string) => {
+    if (role === "student") {
+      if (title === "Assignments") return assignmentsBadge;
+      if (title === "Club Events") return eventsBadge;
+    }
+    return undefined;
   };
 
   return (
@@ -65,6 +105,7 @@ export function AppSidebar() {
                       to={item.url} 
                       className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                       activeClassName="bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                      badge={getBadge(item.title)}
                     >
                       <item.icon className="h-4 w-4" />
                       {open && <span>{item.title}</span>}

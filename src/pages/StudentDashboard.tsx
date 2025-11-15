@@ -1,92 +1,87 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Bell, BookOpen, TrendingUp, Calendar } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { GraduationCap, Bell } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function StudentDashboard() {
   const { userId } = useAuth();
-  const [hasNewData, setHasNewData] = useState(false);
+  const [notifications, setNotifications] = useState<{ type: string; count: number }[]>([]);
 
   useEffect(() => {
-    const dataUploaded = localStorage.getItem('datasetUploaded');
-    setHasNewData(dataUploaded === 'true');
+    const checkNotifications = () => {
+      const lastCheckedAssignments = localStorage.getItem("lastCheckedAssignments") || "0";
+      const lastCheckedEvents = localStorage.getItem("lastCheckedEvents") || "0";
+      const lastAssignmentPosted = localStorage.getItem("lastAssignmentPosted") || "0";
+      const lastEventPosted = localStorage.getItem("lastEventPosted") || "0";
+
+      const newNotifications = [];
+      
+      if (parseInt(lastAssignmentPosted) > parseInt(lastCheckedAssignments)) {
+        const assignments = JSON.parse(localStorage.getItem("assignments") || "[]");
+        if (assignments.length > 0) {
+          newNotifications.push({ type: "assignments", count: assignments.length });
+        }
+      }
+
+      if (parseInt(lastEventPosted) > parseInt(lastCheckedEvents)) {
+        const events = JSON.parse(localStorage.getItem("clubEvents") || "[]");
+        if (events.length > 0) {
+          newNotifications.push({ type: "events", count: events.length });
+        }
+      }
+
+      setNotifications(newNotifications);
+    };
+
+    checkNotifications();
   }, []);
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {hasNewData && (
-          <Alert className="border-primary bg-primary/10">
-            <Bell className="h-4 w-4 text-primary" />
-            <AlertTitle className="text-primary">New Performance Data Available!</AlertTitle>
-            <AlertDescription className="text-foreground">
-              Your teacher has uploaded new performance data. Check "Performance Review" from the menu to view your results.
+        {notifications.length > 0 && (
+          <Alert>
+            <Bell className="h-4 w-4" />
+            <AlertTitle>New Updates Available!</AlertTitle>
+            <AlertDescription className="space-y-1">
+              {notifications.map((notif, idx) => (
+                <div key={idx}>
+                  {notif.type === "assignments" && (
+                    <Link to="/student/assignments" className="text-primary hover:underline block">
+                      {notif.count} new assignment{notif.count > 1 ? "s" : ""} posted
+                    </Link>
+                  )}
+                  {notif.type === "events" && (
+                    <Link to="/student/events" className="text-primary hover:underline block">
+                      {notif.count} new event{notif.count > 1 ? "s" : ""} posted
+                    </Link>
+                  )}
+                </div>
+              ))}
             </AlertDescription>
           </Alert>
         )}
 
-        <div>
-          <h2 className="text-4xl font-bold text-foreground mb-2">
-            Welcome, Student {userId}!
-          </h2>
-          <p className="text-muted-foreground text-lg">
-            Use the sidebar menu to access your academic features
-          </p>
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                Performance Review
-              </CardTitle>
-              <CardDescription>View your grades and performance analytics</CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-primary" />
-                Assignments
-              </CardTitle>
-              <CardDescription>Track and manage your assignments</CardDescription>
-            </CardHeader>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-primary" />
-                Club Events
-              </CardTitle>
-              <CardDescription>Explore and register for club activities</CardDescription>
-            </CardHeader>
-          </Card>
-        </div>
-
         <Card>
           <CardHeader>
-            <CardTitle>Quick Tips</CardTitle>
+            <div className="flex items-center gap-3">
+              <GraduationCap className="h-8 w-8 text-primary" />
+              <div>
+                <CardTitle className="text-2xl">Welcome, {userId}!</CardTitle>
+                <CardDescription>
+                  Your academic dashboard is ready to help you succeed
+                </CardDescription>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-2 text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-1">•</span>
-                <span>Check "Performance Review" to view your detailed academic performance after entering your credentials</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-1">•</span>
-                <span>Stay updated with the latest assignments and club events through the sidebar menu</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-1">•</span>
-                <span>Track your achievements and receive personalized feedback from teachers</span>
-              </li>
-            </ul>
+            <p className="text-muted-foreground">
+              Use the sidebar menu to navigate through your performance reviews, assignments, 
+              club events, achievements, and feedback sections.
+            </p>
           </CardContent>
         </Card>
       </div>

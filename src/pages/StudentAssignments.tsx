@@ -20,6 +20,7 @@ export default function StudentAssignments() {
     if (stored) {
       setAssignments(JSON.parse(stored));
     }
+    localStorage.setItem("lastCheckedAssignments", Date.now().toString());
   }, []);
 
   return (
