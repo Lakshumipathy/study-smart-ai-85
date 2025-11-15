@@ -22,6 +22,7 @@ export default function StudentEvents() {
     if (stored) {
       setEvents(JSON.parse(stored));
     }
+    localStorage.setItem("lastCheckedEvents", Date.now().toString());
   }, []);
 
   return (

@@ -54,6 +54,7 @@ export default function TeacherAssignments() {
     const updated = [...assignments, newAssignment];
     setAssignments(updated);
     localStorage.setItem("assignments", JSON.stringify(updated));
+    localStorage.setItem("lastAssignmentPosted", Date.now().toString());
 
     setTitle("");
     setSubject("");

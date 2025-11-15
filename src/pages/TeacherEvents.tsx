@@ -58,6 +58,7 @@ export default function TeacherEvents() {
     const updated = [...events, newEvent];
     setEvents(updated);
     localStorage.setItem("clubEvents", JSON.stringify(updated));
+    localStorage.setItem("lastEventPosted", Date.now().toString());
 
     setTitle("");
     setClub("");
