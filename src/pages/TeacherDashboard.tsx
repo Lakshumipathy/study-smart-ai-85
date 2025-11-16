@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,10 +6,28 @@ import { Input } from "@/components/ui/input";
 import { Upload, CheckCircle, Users, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+interface Activity {
+  id: string;
+  message: string;
+  timestamp: string;
+  type: 'dataset' | 'assignment' | 'event';
+}
+
 export default function TeacherDashboard() {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [recentActivities, setRecentActivities] = useState<Activity[]>([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const stored = localStorage.getItem('teacherActivities');
+    if (stored) {
+      const activities = JSON.parse(stored);
+      setRecentActivities(activities.slice(0, 5).sort((a: Activity, b: Activity) => 
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      ));
+    }
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -87,7 +105,21 @@ export default function TeacherDashboard() {
       
       localStorage.setItem('studentData', JSON.stringify(sampleStudentData));
       localStorage.setItem('datasetUploaded', 'true');
-      localStorage.setItem('uploadTimestamp', new Date().toISOString());
+      const timestamp = new Date().toISOString();
+      localStorage.setItem('uploadTimestamp', timestamp);
+      localStorage.setItem('lastDatasetUploaded', Date.now().toString());
+      
+      // Add to recent activities
+      const activity: Activity = {
+        id: Date.now().toString(),
+        message: "Student performance dataset uploaded",
+        timestamp,
+        type: 'dataset'
+      };
+      const activities = JSON.parse(localStorage.getItem('teacherActivities') || '[]');
+      activities.unshift(activity);
+      localStorage.setItem('teacherActivities', JSON.stringify(activities));
+      setRecentActivities(activities.slice(0, 5));
       
       toast({
         title: "Dataset uploaded successfully!",
@@ -168,29 +200,30 @@ export default function TeacherDashboard() {
             <CardTitle>Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-start gap-4 pb-4 border-b">
-                <div className="w-2 h-2 rounded-full bg-success mt-2" />
-                <div>
-                  <p className="font-medium">Dataset uploaded for Grade 10A</p>
-                  <p className="text-sm text-muted-foreground">2 hours ago</p>
-                </div>
+            {recentActivities.length > 0 ? (
+              <div className="space-y-4">
+                {recentActivities.map((activity, index) => (
+                  <div 
+                    key={activity.id} 
+                    className={`flex items-start gap-4 ${index < recentActivities.length - 1 ? 'pb-4 border-b' : ''}`}
+                  >
+                    <div className={`w-2 h-2 rounded-full mt-2 ${
+                      activity.type === 'dataset' ? 'bg-success' : 
+                      activity.type === 'assignment' ? 'bg-primary' : 
+                      'bg-warning'
+                    }`} />
+                    <div className="flex-1">
+                      <p className="font-medium">{activity.message}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {new Date(activity.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-start gap-4 pb-4 border-b">
-                <div className="w-2 h-2 rounded-full bg-primary mt-2" />
-                <div>
-                  <p className="font-medium">Performance review completed</p>
-                  <p className="text-sm text-muted-foreground">5 hours ago</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-2 h-2 rounded-full bg-warning mt-2" />
-                <div>
-                  <p className="font-medium">Assignment deadline reminder</p>
-                  <p className="text-sm text-muted-foreground">1 day ago</p>
-                </div>
-              </div>
-            </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">No recent activities</p>
+            )}
           </CardContent>
         </Card>
       </div>

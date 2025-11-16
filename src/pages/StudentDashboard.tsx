@@ -14,8 +14,10 @@ export default function StudentDashboard() {
     const checkNotifications = () => {
       const lastCheckedAssignments = localStorage.getItem("lastCheckedAssignments") || "0";
       const lastCheckedEvents = localStorage.getItem("lastCheckedEvents") || "0";
+      const lastCheckedDataset = localStorage.getItem("lastCheckedDataset") || "0";
       const lastAssignmentPosted = localStorage.getItem("lastAssignmentPosted") || "0";
       const lastEventPosted = localStorage.getItem("lastEventPosted") || "0";
+      const lastDatasetUploaded = localStorage.getItem("lastDatasetUploaded") || "0";
 
       const newNotifications = [];
       
@@ -30,6 +32,13 @@ export default function StudentDashboard() {
         const events = JSON.parse(localStorage.getItem("clubEvents") || "[]");
         if (events.length > 0) {
           newNotifications.push({ type: "events", count: events.length });
+        }
+      }
+
+      if (parseInt(lastDatasetUploaded) > parseInt(lastCheckedDataset)) {
+        const datasetUploaded = localStorage.getItem("datasetUploaded");
+        if (datasetUploaded === "true") {
+          newNotifications.push({ type: "dataset", count: 1 });
         }
       }
 
@@ -57,6 +66,11 @@ export default function StudentDashboard() {
                   {notif.type === "events" && (
                     <Link to="/student/events" className="text-primary hover:underline block">
                       {notif.count} new event{notif.count > 1 ? "s" : ""} posted
+                    </Link>
+                  )}
+                  {notif.type === "dataset" && (
+                    <Link to="/student/performance" className="text-primary hover:underline block">
+                      New performance data available
                     </Link>
                   )}
                 </div>
