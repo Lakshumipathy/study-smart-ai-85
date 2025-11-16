@@ -60,6 +60,17 @@ export default function TeacherEvents() {
     localStorage.setItem("clubEvents", JSON.stringify(updated));
     localStorage.setItem("lastEventPosted", Date.now().toString());
 
+    // Add to teacher recent activities
+    const activity = {
+      id: Date.now().toString(),
+      message: `Event posted: ${title}`,
+      timestamp: new Date().toISOString(),
+      type: 'event'
+    };
+    const activities = JSON.parse(localStorage.getItem('teacherActivities') || '[]');
+    activities.unshift(activity);
+    localStorage.setItem('teacherActivities', JSON.stringify(activities));
+
     setTitle("");
     setClub("");
     setDate("");

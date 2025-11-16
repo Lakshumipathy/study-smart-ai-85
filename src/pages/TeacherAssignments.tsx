@@ -56,6 +56,17 @@ export default function TeacherAssignments() {
     localStorage.setItem("assignments", JSON.stringify(updated));
     localStorage.setItem("lastAssignmentPosted", Date.now().toString());
 
+    // Add to teacher recent activities
+    const activity = {
+      id: Date.now().toString(),
+      message: `Assignment posted: ${title}`,
+      timestamp: new Date().toISOString(),
+      type: 'assignment'
+    };
+    const activities = JSON.parse(localStorage.getItem('teacherActivities') || '[]');
+    activities.unshift(activity);
+    localStorage.setItem('teacherActivities', JSON.stringify(activities));
+
     setTitle("");
     setSubject("");
     setDescription("");
