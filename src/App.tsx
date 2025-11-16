@@ -10,12 +10,12 @@ import StudentPerformance from "./pages/StudentPerformance";
 import StudentAssignments from "./pages/StudentAssignments";
 import StudentEvents from "./pages/StudentEvents";
 import StudentAchievements from "./pages/StudentAchievements";
-import StudentFeedback from "./pages/StudentFeedback";
+import StudentResearchInternship from "./pages/StudentResearchInternship";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import TeacherAssignments from "./pages/TeacherAssignments";
 import TeacherEvents from "./pages/TeacherEvents";
 import TeacherAchievements from "./pages/TeacherAchievements";
-import TeacherFeedback from "./pages/TeacherFeedback";
+import TeacherResearchInternship from "./pages/TeacherResearchInternship";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,12 +34,12 @@ const App = () => (
             <Route path="/student/assignments" element={<StudentAssignments />} />
             <Route path="/student/events" element={<StudentEvents />} />
             <Route path="/student/achievements" element={<StudentAchievements />} />
-            <Route path="/student/feedback" element={<StudentFeedback />} />
+            <Route path="/student/research-internship" element={<StudentResearchInternship />} />
             <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
             <Route path="/teacher/assignments" element={<TeacherAssignments />} />
             <Route path="/teacher/events" element={<TeacherEvents />} />
             <Route path="/teacher/achievements" element={<TeacherAchievements />} />
-            <Route path="/teacher/feedback" element={<TeacherFeedback />} />
+            <Route path="/teacher/research-internship" element={<TeacherResearchInternship />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
