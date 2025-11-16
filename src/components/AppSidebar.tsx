@@ -1,4 +1,4 @@
-import { Home, FileText, Calendar, Trophy, MessageSquare, TrendingUp, LogOut } from "lucide-react";
+import { Home, FileText, Calendar, Trophy, BookOpen, TrendingUp, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,7 +22,7 @@ const studentItems = [
   { title: "Assignments", url: "/student/assignments", icon: FileText },
   { title: "Club Events", url: "/student/events", icon: Calendar },
   { title: "Achievements", url: "/student/achievements", icon: Trophy },
-  { title: "Feedback", url: "/student/feedback", icon: MessageSquare },
+  { title: "Research/Internship", url: "/student/research-internship", icon: BookOpen },
 ];
 
 const teacherItems = [
@@ -30,7 +30,7 @@ const teacherItems = [
   { title: "Assignments", url: "/teacher/assignments", icon: FileText },
   { title: "Club Events", url: "/teacher/events", icon: Calendar },
   { title: "Achievements", url: "/teacher/achievements", icon: Trophy },
-  { title: "Feedback", url: "/teacher/feedback", icon: MessageSquare },
+  { title: "Research/Internship", url: "/teacher/research-internship", icon: BookOpen },
 ];
 
 export function AppSidebar() {
