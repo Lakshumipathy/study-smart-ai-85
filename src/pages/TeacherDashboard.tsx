@@ -44,6 +44,21 @@ export default function TeacherDashboard() {
     setTimeout(() => {
       const sampleStudentData = [
         {
+          regNo: "S001",
+          name: "Alex Johnson",
+          department: "Computer Science",
+          semester: "4",
+          attendance: "78%",
+          subjects: [
+            { name: "Data Structures", marks: 42, maxMarks: 100 },
+            { name: "Database Management", marks: 38, maxMarks: 100 },
+            { name: "Operating Systems", marks: 65, maxMarks: 100 },
+            { name: "Computer Networks", marks: 45, maxMarks: 100 },
+            { name: "Web Development", marks: 72, maxMarks: 100 },
+            { name: "Software Engineering", marks: 55, maxMarks: 100 },
+          ],
+        },
+        {
           regNo: "2024CS001",
           semester: "5",
           subjectData: [
@@ -98,7 +113,7 @@ export default function TeacherDashboard() {
             { day: "Tuesday", topic: "Practice Problems - Equations", duration: "45 mins" },
             { day: "Wednesday", topic: "Organic Chemistry", duration: "1 hour" },
             { day: "Thursday", topic: "Review and Quiz", duration: "30 mins" },
-            { day: "Friday", topic: "Lab Techniques", duration: "1 hour" },
+            { day: "Friday", topic: "Acids and Bases", duration: "1 hour" },
           ],
         },
       ];
