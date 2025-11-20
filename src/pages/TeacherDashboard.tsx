@@ -49,13 +49,13 @@ export default function TeacherDashboard() {
           department: "Computer Science",
           semester: "4",
           attendance: "78%",
-          subjects: [
-            { name: "Data Structures", marks: 42, maxMarks: 100 },
-            { name: "Database Management", marks: 38, maxMarks: 100 },
-            { name: "Operating Systems", marks: 65, maxMarks: 100 },
-            { name: "Computer Networks", marks: 45, maxMarks: 100 },
-            { name: "Web Development", marks: 72, maxMarks: 100 },
-            { name: "Software Engineering", marks: 55, maxMarks: 100 },
+          subjectData: [
+            { subject: "Data Structures", marks: 42, total: 100 },
+            { subject: "Database Management", marks: 38, total: 100 },
+            { subject: "Operating Systems", marks: 65, total: 100 },
+            { subject: "Computer Networks", marks: 45, total: 100 },
+            { subject: "Web Development", marks: 72, total: 100 },
+            { subject: "Software Engineering", marks: 55, total: 100 },
           ],
         },
         {
